@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro - Biblioteca</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 20px; }
+  h1 { font-size: 22px; }
+  input { display: block; margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; }
+  button { padding: 10px 20px; cursor: pointer; }
+  #mensagem { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<h1>Cadastro de leitor</h1>
+<p>Preencha seus dados para criar sua conta na biblioteca.</p>
+
+<input id="nome" placeholder="Nome completo">
+<input id="email" type="email" placeholder="Email">
+<button onclick="cadastrar()">Cadastrar</button>
+<p id="mensagem"></p>
+
+<script>
+async function cadastrar() {
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+  const msg = document.getElementById("mensagem");
+
+  const res = await fetch("/usuarios", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome, email })
+  });
+  const data = await res.json();
+
+  if (res.ok) {
+    msg.textContent = "Cadastro realizado com sucesso!";
+    msg.style.color = "green";
+  } else {
+    msg.textContent = data.erro || "Erro ao cadastrar.";
+    msg.style.color = "red";
+  }
+}
+</script>
+
+</body>
+</html>
