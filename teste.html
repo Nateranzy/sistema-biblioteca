@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Testar API - Biblioteca</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+  h2 { margin-top: 40px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+  input { display: block; margin: 6px 0; padding: 6px; width: 100%; box-sizing: border-box; }
+  button { margin-top: 8px; padding: 8px 16px; cursor: pointer; }
+  pre { background: #f4f4f4; padding: 12px; white-space: pre-wrap; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Teste da API - Sistema de Biblioteca</h1>
+<p>A API precisa estar rodando em <code>http://127.0.0.1:5000</code> (rode <code>python run.py</code> no terminal).</p>
+
+<h2>1. Cadastrar livro</h2>
+<input id="titulo" placeholder="Título" value="Dom Casmurro">
+<input id="autor" placeholder="Autor" value="Machado de Assis">
+<input id="isbn" placeholder="ISBN" value="9788535910669">
+<input id="quantidade" type="number" placeholder="Quantidade de exemplares" value="2">
+<button onclick="cadastrarLivro()">Cadastrar</button>
+<pre id="out-livro"></pre>
+
+<h2>2. Listar livros</h2>
+<button onclick="listarLivros()">Listar</button>
+<pre id="out-lista"></pre>
+
+<h2>3. Cadastrar usuário de teste (via terminal)</h2>
+<p>Ainda não temos rota de cadastro de usuário — vamos criar um manualmente no pgAdmin antes do próximo passo.</p>
+
+<h2>4. Realizar empréstimo</h2>
+<input id="exemplar_id" placeholder="ID do exemplar" value="1">
+<input id="usuario_id" placeholder="ID do usuário" value="1">
+<button onclick="emprestar()">Emprestar</button>
+<pre id="out-emprestimo"></pre>
+
+<script>
+const BASE = "http://127.0.0.1:5000";
+
+async function cadastrarLivro() {
+  const body = {
+    titulo: document.getElementById("titulo").value,
+    autor: document.getElementById("autor").value,
+    isbn: document.getElementById("isbn").value,
+    quantidade_exemplares: parseInt(document.getElementById("quantidade").value)
+  };
+  const res = await fetch(`${BASE}/livros`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  document.getElementById("out-livro").textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+async function listarLivros() {
+  const res = await fetch(`${BASE}/livros`);
+  document.getElementById("out-lista").textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+async function emprestar() {
+  const body = {
+    exemplar_id: parseInt(document.getElementById("exemplar_id").value),
+    usuario_id: parseInt(document.getElementById("usuario_id").value)
+  };
+  const res = await fetch(`${BASE}/emprestimos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  document.getElementById("out-emprestimo").textContent = `Status: ${res.status}\n` + JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>
