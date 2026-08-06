@@ -27,3 +27,11 @@ def cadastrar_usuario():
     db.session.commit()
 
     return jsonify({"id": usuario.id, "nome": usuario.nome}), 201
+
+@usuarios_bp.route("/usuarios", methods=["GET"])
+def listar_usuarios():
+    usuarios = Usuario.query.all()
+    return jsonify([
+        {"id": u.id, "nome": u.nome, "email": u.email, "ativo": u.ativo}
+        for u in usuarios
+    ])
