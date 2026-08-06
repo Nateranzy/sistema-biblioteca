@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro de Livro - Biblioteca</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 20px; }
+  h1 { font-size: 22px; }
+  input, select { display: block; margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; }
+  button { padding: 10px 20px; cursor: pointer; }
+  #mensagem { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<h1>Cadastro de livro</h1>
+<p>Preencha os dados do livro para adicioná-lo ao acervo.</p>
+
+<input id="titulo" placeholder="Título">
+<input id="autor" placeholder="Autor">
+<input id="isbn" placeholder="ISBN (opcional)">
+<input id="categoria" placeholder="Categoria (opcional)">
+<input id="quantidade" type="number" min="1" value="1" placeholder="Quantidade de exemplares">
+<button onclick="cadastrar()">Cadastrar</button>
+<p id="mensagem"></p>
+
+<script>
+async function cadastrar() {
+  const titulo = document.getElementById("titulo").value;
+  const autor = document.getElementById("autor").value;
+  const isbn = document.getElementById("isbn").value;
+  const categoria = document.getElementById("categoria").value;
+  const quantidade = parseInt(document.getElementById("quantidade").value) || 1;
+  const msg = document.getElementById("mensagem");
+
+  const res = await fetch("/livros", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      titulo,
+      autor,
+      isbn,
+      categoria,
+      quantidade_exemplares: quantidade
+    })
+  });
+  const data = await res.json();
+
+  if (res.ok) {
+    msg.textContent = "Livro cadastrado com sucesso!";
+    msg.style.color = "green";
+  } else {
+    msg.textContent = data.erro || "Erro ao cadastrar.";
+    msg.style.color = "red";
+  }
+}
+</script>
+
+</body>
+</html>

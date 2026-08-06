@@ -5,6 +5,13 @@ from app.models import Livro, Exemplar
 livros_bp = Blueprint("livros", __name__, url_prefix="/livros")
 
 
+from flask import render_template
+
+@livros_bp.route("/cadastro", methods=["GET"])
+def pagina_cadastro_livro():
+    return render_template("cadastro_livro.html")
+
+
 @livros_bp.route("", methods=["GET"])
 def listar_livros():
     livros = Livro.query.all()
